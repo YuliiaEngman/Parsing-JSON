@@ -18,10 +18,12 @@ let json = """
 }
 """.data(using: .utf8)!
 
+//===========================================================
 // Create Model(s)
+//===========================================================
 // Codable: Decodable & Encodable
-// Decodable: converts jsom data
-// Encodable: converts to jsom data to e.g. POST to a API
+// Decodable: converts json data (read the JSON)
+// Encodable: converts to json data to e.g. POST to a API
 
 // Top level JSON is a Dictionary
 struct ResultsWrapper: Decodable {
@@ -37,7 +39,7 @@ struct Contact: Decodable {
 // decode the JSON data to our Swift model
 //==============================
 do {
-    let dictionary = try JSONDecoder().decode(ResultsWrapper.self, from: json)
+    let dictionary = try JSONDecoder().decode(ResultsWrapper.self, from: json) // always start with top level - here is a ResultsWrapper
     let contacts = dictionary.results // [Contact]
     dump(contacts)
 } catch {
