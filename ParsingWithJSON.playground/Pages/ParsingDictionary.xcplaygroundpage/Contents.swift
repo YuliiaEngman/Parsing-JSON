@@ -1,4 +1,5 @@
 // Parsing Dictionary
+
 import Foundation
 
 // JSON Data
@@ -18,11 +19,9 @@ let json = """
 """.data(using: .utf8)!
 
 // Create Model(s)
-
 // Codable: Decodable & Encodable
 // Decodable: converts jsom data
 // Encodable: converts to jsom data to e.g. POST to a API
-
 
 // Top level JSON is a Dictionary
 struct ResultsWrapper: Decodable {
@@ -37,7 +36,6 @@ struct Contact: Decodable {
 // =============================
 // decode the JSON data to our Swift model
 //==============================
-
 do {
     let dictionary = try JSONDecoder().decode(ResultsWrapper.self, from: json)
     let contacts = dictionary.results // [Contact]
