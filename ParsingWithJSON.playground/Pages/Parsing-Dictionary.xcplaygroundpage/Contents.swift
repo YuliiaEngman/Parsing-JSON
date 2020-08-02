@@ -45,3 +45,13 @@ do {
 } catch {
     print("decoding error: \(error)")
 }
+
+/* PRINTED:
+ ▿ 2 elements
+ ▿ __lldb_expr_88.Contact
+   - firstName: "John"
+   - lastName: "Appleseed"
+ ▿ __lldb_expr_88.Contact
+   - firstName: "Alex"
+   - lastName: "Paul"
+ */
