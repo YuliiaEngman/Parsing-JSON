@@ -98,13 +98,13 @@ struct Strain: Decodable {
     let id: Int
     let race: String
     let flavors: [String]
-    let effects: [Sting: [String]]
+    let effects: [String: [String]]
 }
 
 // Decode JSON to Swift oblects:
 
 do {
-    let dictionary = try JSONDecoder().decode([String: Strain.self], from: json)
+    let dictionary = try JSONDecoder().decode([String: Strain].self, from: json)
     // use a for-loop to create [Strain] or use map {}
     var strains = [Strain]()
     for (_, value) in dictionary {
