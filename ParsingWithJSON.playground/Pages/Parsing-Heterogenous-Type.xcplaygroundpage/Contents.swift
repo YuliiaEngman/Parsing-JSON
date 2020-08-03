@@ -144,24 +144,28 @@ struct Person: Decodable {
 struct Location: Decodable {
     let city: String
     let country: String
-    let postcode: Int // or String, but because we use Int and String! we will get following error:
+    let postcode: Postcode // Not Int or String, but because we use Int and String! we will get following error:
     /*
      ▿ Swift.DecodingError.typeMismatch
      ▿ typeMismatch: (2 elements)
-       - .0: Swift.Int #0
-       ▿ .1: Swift.DecodingError.Context
-         ▿ codingPath: 4 elements
-           - CodingKeys(stringValue: "results", intValue: nil)
-           ▿ _JSONKey(stringValue: "Index 1", intValue: 1)
-             - stringValue: "Index 1"
-             ▿ intValue: Optional(1)
-               - some: 1
-           - CodingKeys(stringValue: "location", intValue: nil)
-           - CodingKeys(stringValue: "postcode", intValue: nil)
-         - debugDescription: "Expected to decode Int but found a string/data instead."
-         - underlyingError: nil
-
+     - .0: Swift.Int #0
+     ▿ .1: Swift.DecodingError.Context
+     ▿ codingPath: 4 elements
+     - CodingKeys(stringValue: "results", intValue: nil)
+     ▿ _JSONKey(stringValue: "Index 1", intValue: 1)
+     - stringValue: "Index 1"
+     ▿ intValue: Optional(1)
+     - some: 1
+     - CodingKeys(stringValue: "location", intValue: nil)
+     - CodingKeys(stringValue: "postcode", intValue: nil)
+     - debugDescription: "Expected to decode Int but found a string/data instead."
+     - underlyingError: nil
+     
      */
+}
+
+enum AppError: Error {
+    case missingValue // if not an Int or String throw this error
 }
 
 // Create a custom oblect to be the data of postcode
@@ -176,10 +180,21 @@ enum Postcode: Decodable {
     
     // override the init(from decoder: ) initializer
     init(from decoder: Decoder) throws {
+        // handle the two cases of Int or String
         
+        // if it's not an Int or a String then we will throw an error
+        if let intValue = try? decoder.singleValueContainer().decode(Int.self) {
+            self = .int(intValue)
+            return
+        }
+        if let stringValue = try? decoder.singleValueContainer().decode(String.self) {
+            self = .string(stringValue)
+            return
+        }
+        throw AppError.missingValue // wat not an Int or String
     }
-    
 }
+
 
 //==================================
 // Decoding JSON to Swift oblects
@@ -188,7 +203,18 @@ enum Postcode: Decodable {
 do {
     let dictionary = try JSONDecoder().decode(ResultsWraper.self, from: json)
     let people = dictionary.results
-    dump(people)
+    
+    // if trying to get to Postcode
+    let firstPerson = people[0]
+    let secondPerson = people[1]
+    let postcode = secondPerson.location.postcode // String
+    switch postcode {
+    case .int(let intValue):
+        print("postcode is \(intValue)")
+    case .string(let stringValue):
+        print("postcode is \(stringValue)")
+    }
+    //dump(people)
 } catch {
     dump(error)
 }
