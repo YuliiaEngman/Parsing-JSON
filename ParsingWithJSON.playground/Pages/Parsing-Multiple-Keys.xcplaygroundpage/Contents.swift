@@ -101,6 +101,8 @@ struct Strain: Decodable {
     let effects: [String: [String]]
 }
 
+// {data, response, error} - all of them optional and we need to unwrap
+
 // Decode JSON to Swift oblects:
 
 do {
